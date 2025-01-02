@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema(
     },
     isCR: {
       type: Boolean,
+      default: false,
     },
     class: {
       type: mongoose.Schema.Types.ObjectId,

@@ -1,6 +1,15 @@
 import express from "express";
-import { login, register } from "../controllers/user.controller.js";
+import {
+  getProfile,
+  login,
+  logout,
+  register,
+  updateAvatar,
+  updatePassword,
+} from "../controllers/user.controller.js";
 import { body } from "express-validator";
+import { authUser } from "../middlewares/auth.middleware.js";
+import { upload } from "../middlewares/multer.middleware.js";
 const router = express.Router();
 
 router.post(
@@ -21,4 +30,9 @@ router.post(
 );
 
 router.post("/login", login);
+
+router.get("/profile", authUser, getProfile);
+router.get("/logout", authUser, logout);
+router.patch("/update-avatar", upload.single("avatar"), authUser, updateAvatar);
+router.patch("/update-password", authUser, updatePassword);
 export default router;
