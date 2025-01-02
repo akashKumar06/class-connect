@@ -22,9 +22,6 @@ function App() {
           <Route path="resources" element={<Resources />} />
           <Route path="join-class" element={<JoinClass />} />
           <Route path="chat-room" element={<ChatRoom />} />
-          {/* <Route path="resources" element={<Resources />} />
-          <Route path="chat-room" element={<ChatRoom />} />
-          <Route path="join-class" element={<JoinClass />} /> */}
         </Route>
       </Routes>
     </BrowserRouter>
