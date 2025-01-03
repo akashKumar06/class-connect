@@ -37,19 +37,16 @@ async function register(req, res) {
 
 async function login(req, res) {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty())
-      return res.status(400).json({ error: errors.array() });
     const { username, email, password } = req.body;
 
     if (!username && !email) throw new Error("Username or Email is required.");
-    if (!password) throw new Error("Password is required.");
+    if (!password) throw new ApiError("Password is required.", 400);
 
     const user = await User.findOne({ $or: [{ email }, { username }] });
-    if (!user) throw new Error({ message: "Invalid email or password" });
+    if (!user) throw new ApiError("Invalid email or password", 400);
 
     const isMatch = await user.comparePassword(password);
-    if (!isMatch) throw new Error({ message: "Invalid email or password" });
+    if (!isMatch) throw new ApiError("Invalid email or password", 400);
 
     const token = user.generateToken();
 
