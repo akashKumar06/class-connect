@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.routes.js";
 import folderRouter from "./routes/folder.routes.js";
 import fileRouter from "./routes/file.routes.js";
+import classRouter from "./routes/class.routes.js";
 
 const app = express();
 app.use(
@@ -22,4 +23,6 @@ app.use(express.static("public"));
 app.use("/api/users", userRouter);
 app.use("/api/folders", folderRouter);
 app.use("/api/files", fileRouter);
+app.use("/api/classes", classRouter);
+
 export default app;

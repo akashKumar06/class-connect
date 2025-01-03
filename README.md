@@ -399,3 +399,205 @@ Form Data:
   }
 }
 ```
+
+### POST /api/classes
+
+Create a new class. Requires authentication.
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token"
+}
+```
+
+#### Request Body
+
+```json
+{
+  "name": "Class Name",
+  "startYear": 2023,
+  "endYear": 2024,
+  "department": "Department Name"
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "message": "Class created successfully",
+  "data": {
+    "_id": "class_id",
+    "name": "Class Name",
+    "startYear": 2023,
+    "endYear": 2024,
+    "department": "Department Name",
+    "createdAt": "2023-10-01T00:00:00.000Z",
+    "updatedAt": "2023-10-01T00:00:00.000Z"
+  }
+}
+```
+
+### GET /api/classes
+
+Get all classes. Requires authentication.
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token"
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "classes": [
+    {
+      "_id": "class_id",
+      "name": "Class Name",
+      "startYear": 2023,
+      "endYear": 2024,
+      "department": "Department Name",
+      "createdAt": "2023-10-01T00:00:00.000Z",
+      "updatedAt": "2023-10-01T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+### GET /api/classes/:id
+
+Get a class by its ID. Requires authentication.
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token"
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "message": "Class fetched successfully",
+  "data": {
+    "class": {
+      "_id": "class_id",
+      "name": "Class Name",
+      "startYear": 2023,
+      "endYear": 2024,
+      "department": "Department Name",
+      "createdAt": "2023-10-01T00:00:00.000Z",
+      "updatedAt": "2023-10-01T00:00:00.000Z"
+    },
+    "students": [
+      {
+        "_id": "student_id",
+        "username": "student_username",
+        "email": "student@example.com",
+        "fullname": {
+          "firstname": "John",
+          "lastname": "Doe"
+        },
+        "class": "class_id",
+        "avatar": "avatar_url",
+        "createdAt": "2023-10-01T00:00:00.000Z",
+        "updatedAt": "2023-10-01T00:00:00.000Z"
+      }
+    ]
+  }
+}
+```
+
+### PATCH /api/classes/:id
+
+Edit a class by its ID. Requires authentication.
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token"
+}
+```
+
+#### Request Body
+
+```json
+{
+  "name": "Updated Class Name",
+  "startYear": 2023,
+  "endYear": 2024,
+  "department": "Updated Department Name"
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "message": "Class updated successfully",
+  "data": {
+    "_id": "class_id",
+    "name": "Updated Class Name",
+    "startYear": 2023,
+    "endYear": 2024,
+    "department": "Updated Department Name",
+    "createdAt": "2023-10-01T00:00:00.000Z",
+    "updatedAt": "2023-10-01T00:00:00.000Z"
+  }
+}
+```
+
+### DELETE /api/classes/:studentId
+
+Remove a student from a class. Requires authentication.
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token"
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "message": "Student removed from class successfully"
+}
+```
+
+### PATCH /api/classes/:classId/:studentId
+
+Add a student to a class. Requires authentication.
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token"
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "message": "Student added to class successfully"
+}
+```
