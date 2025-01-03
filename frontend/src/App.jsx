@@ -8,6 +8,8 @@ import DashboardHeroSection from "./components/DashboardHeroSection";
 import Resources from "./pages/Resources";
 import JoinClass from "./pages/JoinClass";
 import ChatRoom from "./pages/ChatRoom";
+import CreateClass from "./pages/CreateClass";
+import MyClass from "./pages/MyClass";
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
           <Route path="resources" element={<Resources />} />
           <Route path="join-class" element={<JoinClass />} />
           <Route path="chat-room" element={<ChatRoom />} />
+          <Route path="create-class" element={<CreateClass />} />
+          <Route path="my-class" element={<MyClass />} />
         </Route>
       </Routes>
     </BrowserRouter>

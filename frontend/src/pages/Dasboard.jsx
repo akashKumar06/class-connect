@@ -5,7 +5,9 @@ function Dashboard() {
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <div className="w-64 bg-green-600 text-white flex flex-col p-6">
-        <h2 className="text-2xl font-bold mb-8">ClassConnect</h2>
+        <Link to="/" className="text-2xl font-bold mb-8">
+          ClassConnect
+        </Link>
         <nav className="space-y-6">
           <Link
             to="profile"
@@ -30,6 +32,18 @@ function Dashboard() {
             className="block text-lg hover:bg-green-700 px-4 py-2 rounded-md transition-all duration-300"
           >
             Join Class
+          </Link>
+          <Link
+            to="create-class"
+            className="block text-lg hover:bg-green-700 px-4 py-2 rounded-md transition-all duration-300"
+          >
+            Create Class
+          </Link>
+          <Link
+            to="my-class"
+            className="block text-lg hover:bg-green-700 px-4 py-2 rounded-md transition-all duration-300"
+          >
+            My Class
           </Link>
         </nav>
       </div>

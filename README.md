@@ -220,3 +220,182 @@ Update user's password. Requires authentication.
   "message": "Password updated successfully"
 }
 ```
+
+### POST /folders/create-folder
+
+Create a new folder. Requires authentication.
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token"
+}
+```
+
+#### Request Body
+
+```json
+{
+  "name": "New Folder"
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "message": "Folder created successfully.",
+  "folder": {
+    "_id": "folder_id",
+    "name": "New Folder",
+    "parent": null,
+    "folders": [],
+    "files": [],
+    "createdAt": "2023-10-01T00:00:00.000Z",
+    "updatedAt": "2023-10-01T00:00:00.000Z"
+  }
+}
+```
+
+### GET /folders/
+
+Get all folders and files of the current user. Requires authentication.
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token"
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "folders": [
+    {
+      "_id": "folder_id",
+      "name": "Folder 1",
+      "parent": null,
+      "folders": [],
+      "files": [],
+      "createdAt": "2023-10-01T00:00:00.000Z",
+      "updatedAt": "2023-10-01T00:00:00.000Z"
+    }
+  ],
+  "files": [
+    {
+      "_id": "file_id",
+      "parent": null,
+      "format": "jpg",
+      "resource_type": "image",
+      "url": "file_url",
+      "original_filename": "file_name",
+      "createdAt": "2023-10-01T00:00:00.000Z",
+      "updatedAt": "2023-10-01T00:00:00.000Z"
+    }
+  ]
+}
+```
+
+### GET /folders/:id
+
+Get a folder by its ID. Requires authentication.
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token"
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "folder": {
+    "_id": "folder_id",
+    "name": "Folder 1",
+    "parent": null,
+    "folders": [],
+    "files": [],
+    "createdAt": "2023-10-01T00:00:00.000Z",
+    "updatedAt": "2023-10-01T00:00:00.000Z"
+  }
+}
+```
+
+### GET /folders/hierarchy/:id
+
+Get the hierarchy of a folder by its ID. Requires authentication.
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token"
+}
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "array": [
+    {
+      "name": "Root Folder",
+      "id": "root_folder_id"
+    },
+    {
+      "name": "Sub Folder",
+      "id": "sub_folder_id"
+    }
+  ]
+}
+```
+
+### POST /files/
+
+Upload a new file. Requires authentication.
+
+#### Headers
+
+```json
+{
+  "Authorization": "Bearer jwt_token",
+  "Content-Type": "multipart/form-data"
+}
+```
+
+#### Request Body
+
+```
+Form Data:
+  file: File
+```
+
+#### Response
+
+```json
+{
+  "success": true,
+  "message": "File uploaded successfully",
+  "newFile": {
+    "_id": "file_id",
+    "parent": null,
+    "format": "jpg",
+    "resource_type": "image",
+    "url": "file_url",
+    "original_filename": "file_name",
+    "createdAt": "2023-10-01T00:00:00.000Z",
+    "updatedAt": "2023-10-01T00:00:00.000Z"
+  }
+}
+```
