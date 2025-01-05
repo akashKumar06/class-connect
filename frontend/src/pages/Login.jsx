@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router";
-import userApi from "../services/apiUser";
+import { login } from "../services/apiUser";
 import { useState } from "react";
+import Spinner from "../components/Spinner";
 
 function Login() {
   const [data, setData] = useState("");
@@ -11,7 +12,7 @@ function Login() {
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (user) => userApi.login(user),
+    mutationFn: (user) => login(user),
     onSuccess: (user) => {
       queryClient.setQueryData(["user"], user);
       navigate("/dashboard", { replace: true });
@@ -61,9 +62,9 @@ function Login() {
           <button
             disabled={isPending}
             type="submit"
-            className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600"
+            className="w-full flex items-center justify-center bg-green-500 text-white py-2 rounded-md hover:bg-green-600"
           >
-            Login
+            {isPending ? <Spinner /> : "Login"}
           </button>
         </form>
         <div className="mt-4">

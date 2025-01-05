@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
-import userApi from "../services/apiUser.js";
+import { register } from "../services/apiUser.js";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 function Signup() {
@@ -12,7 +12,7 @@ function Signup() {
 
   const navigate = useNavigate();
   const { mutate, isPending } = useMutation({
-    mutationFn: (user) => userApi.register(user),
+    mutationFn: (user) => register(user),
     onSuccess: () => {
       toast.success("User registered successfully");
       navigate("/login");

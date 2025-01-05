@@ -13,6 +13,7 @@ import JoinClass from "./pages/JoinClass";
 import ChatRoom from "./pages/ChatRoom";
 import CreateClass from "./pages/CreateClass";
 import MyClass from "./pages/MyClass";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,7 +33,14 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/dashboard" element={<Dashboard />}>
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          >
             <Route index element={<DashboardHeroSection />} />
             <Route path="profile" element={<Profile />} />
             <Route path="resources" element={<Resources />} />

@@ -1,6 +1,24 @@
-import { Link, Outlet } from "react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link, Outlet, useNavigate } from "react-router";
+import { logout } from "../services/apiUser";
+import Spinner from "../components/Spinner";
 
 function Dashboard() {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      queryClient.removeQueries();
+      navigate("/", { replace: true });
+    },
+  });
+
+  function handleLogout() {
+    mutate();
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
@@ -54,8 +72,11 @@ function Dashboard() {
           <h1 className="text-3xl font-bold animate-fadeIn">
             Welcome, Student!
           </h1>
-          <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-all duration-300">
-            Logout
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-all duration-300"
+          >
+            {isPending ? <Spinner /> : "Logout"}
           </button>
         </header>
 
