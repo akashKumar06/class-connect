@@ -1,136 +1,150 @@
 import { useState } from "react";
+import Modal from "../components/Modal";
+import useImageUpload from "../hooks/useImageUpload";
+import { useUser } from "../hooks/useUser";
+import Spinner from "../components/Spinner";
+import { useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import ImageUploadForm from "../components/ImageUploadForm";
+import EditProfile from "../components/EditProfile";
+import UpdatePasswordForm from "../components/UpdatePasswordForm";
+import { useUpdatePassword } from "../hooks/useUpdatePassword";
 
 function Profile() {
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "John Doe",
-    email: "johndoe@example.com",
-    phone: "123-456-7890",
-    bio: "I’m a student at ClassConnect learning and growing every day.",
-  });
+  const queryClient = useQueryClient();
+  const { user, isPending } = useUser();
+  const { mutate: uploadImage, isPending: isUploadingImage } = useImageUpload();
+  const { mutate: updatePassword, isPending: isUpdatingPassword } =
+    useUpdatePassword();
 
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const [openImageModal, setOpenImageModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [openUpdatePasswordModal, setUpdatePasswordModal] = useState(false);
+
+  const handleImageOpen = () => {
+    setOpenImageModal(() => true);
   };
 
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
+  function handleCloseModal() {
+    setOpenEditModal(false);
+    setOpenImageModal(false);
+    setUpdatePasswordModal(false);
+  }
+
+  function handleUpdatePassword(data) {
+    updatePassword(data, {
+      onSuccess: () => {
+        toast.success("Password updated successfully");
+        handleCloseModal();
+      },
+      onError: (err) => {
+        toast.error(err.msg);
+      },
+    });
+  }
+
+  const handleImageUpload = (image) => {
+    uploadImage(image, {
+      onSuccess: () => {
+        queryClient.invalidateQueries("user");
+        toast.success("Image uploaded successfully.");
+        handleCloseModal();
+      },
+      onError: (err) => {
+        toast.error(err.msg);
+      },
+    });
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    alert("Profile updated successfully!");
-  };
-
+  if (isPending) return <Spinner />;
   return (
     <div className="min-h-screen bg-gray-100 p-6">
+      {openImageModal && (
+        <Modal>
+          <ImageUploadForm
+            onClose={handleCloseModal}
+            onImageUpload={handleImageUpload}
+            isUploadingImage={isUploadingImage}
+          />
+        </Modal>
+      )}
+      {openEditModal && (
+        <Modal>
+          <EditProfile onClose={handleCloseModal} />
+        </Modal>
+      )}
+      {openUpdatePasswordModal && (
+        <Modal>
+          <UpdatePasswordForm
+            isUpdatingPassword={isUpdatingPassword}
+            onPasswordUpdate={handleUpdatePassword}
+            onClose={handleCloseModal}
+          />
+        </Modal>
+      )}
       <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">Your Profile</h1>
-          <button
-            className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all"
-            onClick={handleEditToggle}
-          >
-            {isEditing ? "Cancel" : "Edit Profile"}
-          </button>
+          <div className="flex gap-2">
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all"
+              onClick={() => setOpenEditModal(true)}
+            >
+              Edit Profile
+            </button>
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all"
+              onClick={() => setUpdatePasswordModal(true)}
+            >
+              Update Password
+            </button>
+          </div>
         </div>
 
         {/* Profile Picture */}
         <div className="flex items-center space-x-6 mb-8">
-          <img
-            src="/default-profile.png"
-            alt="Profile"
-            className="w-24 h-24 rounded-full shadow-md"
-          />
+          <div className="w-24 h-24 rounded-full shadow-md relative top-0 overflow-hidden">
+            <img src={user.avatar} alt="Profile" className="" />
+            <div
+              onClick={handleImageOpen}
+              className="absolute bottom-0 w-full h-10 backdrop-blur-sm hover:cursor-pointer flex items-center justify-center"
+            >
+              <i className="ri-camera-fill"></i>
+            </div>
+          </div>
           <div>
-            <h2 className="text-xl font-semibold">{formData.name}</h2>
-            <p className="text-gray-600">{formData.email}</p>
+            <h2 className="text-xl font-semibold">{`${user.fullname.firstname} ${user.fullname.firstname}`}</h2>
+            <p className="text-gray-600">{user.username}</p>
           </div>
         </div>
 
-        {/* Form */}
         <div className="space-y-6">
           {/* Name */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Name</label>
-            {isEditing ? (
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-green-300"
-              />
-            ) : (
-              <p className="text-gray-800">{formData.name}</p>
-            )}
+            <h2 className="block text-gray-700 font-medium mb-2">Name</h2>
+            <p className="text-gray-800">{`${user.fullname.firstname} ${user.fullname.firstname}`}</p>
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Email
-            </label>
-            {isEditing ? (
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-green-300"
-              />
-            ) : (
-              <p className="text-gray-800">{formData.email}</p>
-            )}
+            <h2 className="block text-gray-700 font-medium mb-2">Email</h2>
+            <p className="text-gray-800">{user.email}</p>
           </div>
 
           {/* Phone */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Phone
-            </label>
-            {isEditing ? (
-              <input
-                type="text"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-green-300"
-              />
-            ) : (
-              <p className="text-gray-800">{formData.phone}</p>
-            )}
+            <h4 className="block text-gray-700 font-medium mb-2">Phone</h4>
+            <p className="text-gray-800">{user?.phone || "Add Phone number"}</p>
           </div>
 
           {/* Bio */}
           <div>
-            <label className="block text-gray-700 font-medium mb-2">Bio</label>
-            {isEditing ? (
-              <textarea
-                name="bio"
-                value={formData.bio}
-                onChange={handleInputChange}
-                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-green-300"
-                rows="4"
-              ></textarea>
-            ) : (
-              <p className="text-gray-800">{formData.bio}</p>
-            )}
+            <h4 className="block text-gray-700 font-medium mb-2">Bio</h4>
+
+            <p className="text-gray-800">{user?.bio || "Add Bio"}</p>
           </div>
         </div>
-
-        {/* Save Button */}
-        {isEditing && (
-          <div className="mt-6">
-            <button
-              className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-all"
-              onClick={handleSave}
-            >
-              Save Changes
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

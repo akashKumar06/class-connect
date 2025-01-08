@@ -65,3 +65,42 @@ export async function getUser() {
     console.log(error);
   }
 }
+
+export async function uploadImage(image) {
+  try {
+    const res = await api.patch("/update-avatar", image, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "multipart/for-data",
+      },
+    });
+    return res.data.user;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updateProfile(user) {
+  try {
+    const res = await api.patch("/update-profile");
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function updatePassword(data) {
+  try {
+    const res = await api.patch("/update-password", data, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data;
+  } catch (error) {
+    const err = new Error();
+    err.msg = error.response.data.message;
+    throw err;
+  }
+}

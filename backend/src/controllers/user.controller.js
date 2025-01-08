@@ -14,12 +14,14 @@ async function register(req, res) {
         error: errors.array(),
       });
     }
-    const { username, email, password, fullname } = req.body;
+    const { username, email, password, fullname, bio, phone } = req.body;
     const user = await createUser({
       username,
       email,
       password,
       fullname,
+      bio,
+      phone,
     });
 
     return res.status(201).json({

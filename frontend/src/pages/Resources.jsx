@@ -26,13 +26,7 @@ function Resources() {
   const [newFolderName, setNewFolderName] = useState("");
 
   // Handle folder creation
-  const handleCreateFolder = () => {
-    if (newFolderName.trim() === "") return;
-    const newFolder = { id: folders.length + 1, name: newFolderName };
-    setFolders([...folders, newFolder]);
-    setNewFolderName("");
-    alert("Folder created successfully!");
-  };
+  const handleCreateFolder = () => {};
 
   // Handle file upload (mock implementation)
   const handleFileUpload = (e) => {
@@ -52,6 +46,8 @@ function Resources() {
     setShowUploadModal(false);
   };
 
+  const [folderName, setFolderName] = useState();
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-6xl mx-auto">
@@ -69,8 +65,8 @@ function Resources() {
               type="text"
               placeholder="New Folder Name"
               className="px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-green-300"
-              value={newFolderName}
-              onChange={(e) => setNewFolderName(e.target.value)}
+              value={folderName}
+              onChange={(e) => setFolderName(e.target.value)}
             />
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-all"
@@ -91,7 +87,7 @@ function Resources() {
                 className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transform transition-transform"
               >
                 <h3 className="text-lg font-bold text-gray-800">
-                  {folder.name}
+                  📁{folder.name}
                 </h3>
               </div>
             ))}

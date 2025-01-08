@@ -7,22 +7,22 @@ function DashboardHeroSection() {
         {
           title: "Profile",
           text: "View and edit your personal information.",
-          link: "/profile",
+          link: "./profile",
         },
         {
           title: "Resources",
           text: "Access study materials and files shared by your class.",
-          link: "/resources",
+          link: "./resources",
         },
         {
           title: "Chat Room",
           text: "Collaborate and communicate with your classmates.",
-          link: "/chat-room",
+          link: "./chat-room",
         },
         {
           title: "Join Class",
           text: "Find and request to join your class.",
-          link: "/join-class",
+          link: "./join-class",
         },
       ].map((item, index) => (
         <div

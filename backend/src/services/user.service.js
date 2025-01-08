@@ -1,6 +1,6 @@
 import User from "../models/user.model.js";
 
-async function createUser({ username, email, password, fullname }) {
+async function createUser({ username, email, password, fullname, bio, phone }) {
   try {
     if ([username, email, password, fullname].some((field) => !field))
       throw new Error("All fields are required");
@@ -13,6 +13,8 @@ async function createUser({ username, email, password, fullname }) {
         firstname: fullname.firstname,
         lastname: fullname?.lastname || "",
       },
+      bio,
+      phone,
     });
     return user;
   } catch (error) {

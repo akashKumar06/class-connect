@@ -31,6 +31,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    bio: {
+      type: String,
+    },
+    phone: {
+      type: String,
+    },
     isCR: {
       type: Boolean,
       default: false,

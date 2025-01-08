@@ -11,27 +11,15 @@ function HeroSection() {
           Organize your learning, connect with your class, and stay on track!
         </p>
         <div className="space-x-4">
-          <button className="bg-white text-green-500 px-6 py-3 rounded-full shadow-lg hover:bg-gray-100">
+          <Link
+            to="/signup"
+            className="bg-white text-green-500 px-6 py-3 rounded-full shadow-lg hover:bg-gray-100"
+          >
             Get Started
-          </button>
+          </Link>
           <button className="bg-transparent border-2 border-white px-6 py-3 rounded-full hover:bg-white hover:text-green-500">
             Learn More
           </button>
-        </div>
-        <div className="mt-6 space-x-4">
-          <Link
-            to="/login"
-            className="text-white underline hover:text-gray-200 transition"
-          >
-            Login
-          </Link>
-          <span>|</span>
-          <Link
-            to="/signup"
-            className="text-white underline hover:text-gray-200 transition"
-          >
-            Signup
-          </Link>
         </div>
       </div>
       <div className="mt-8 md:mt-0">
