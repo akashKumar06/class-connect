@@ -12,7 +12,6 @@ async function uploadOnCloudinary(localFilePath) {
   try {
     if (!localFilePath) throw new Error("local file path not provided.");
     const uploadResult = await cloudinary.uploader.upload(localFilePath, {
-      resource_type: "auto",
       folder: "ClassConnect",
     });
     fs.unlinkSync(localFilePath);

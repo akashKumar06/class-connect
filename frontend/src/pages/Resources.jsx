@@ -1,55 +1,79 @@
 import { useState } from "react";
-
+import { useCreateFolder } from "../hooks/useCreateFolder";
+import Spinner from "../components/Spinner";
+import { toast } from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { useFolder } from "../hooks/useFolder";
+import { Link, useSearchParams } from "react-router";
+import Folders from "../components/Folders";
+import { useFolderHierarchy } from "../hooks/useFolderHierarchy";
+import { useUploadFile } from "../hooks/useUploadFile";
+import Modal from "../components/Modal";
+import UploadFile from "../components/UploadFile";
 function Resources() {
-  const [resources, setResources] = useState([
-    {
-      id: 1,
-      title: "Mathematics Notes - Algebra",
-      description:
-        "Comprehensive notes on Algebra covering key concepts and examples.",
-      fileUrl: "/resources/algebra-notes.pdf",
-    },
-    {
-      id: 2,
-      title: "Physics Lecture - Kinematics",
-      description: "Recorded lecture on the basics of Kinematics.",
-      fileUrl: "/resources/kinematics-lecture.mp4",
-    },
-  ]);
+  const { mutate: createFolder, isPending: isCreatingFolder } =
+    useCreateFolder();
+  const [folderName, setFolderName] = useState("");
+  const queryClient = useQueryClient();
 
-  const [folders, setFolders] = useState([
-    { id: 1, name: "Mathematics" },
-    { id: 2, name: "Physics" },
-  ]);
+  const searchParams = useSearchParams();
+  const { data: folder, isPending: isLoadingFolder } = useFolder();
 
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [newFolderName, setNewFolderName] = useState("");
+  const { data: hierarchy } = useFolderHierarchy();
+
+  const { mutate: uploadFile, isPending: isUploadingFile } = useUploadFile();
+  const [openFileUploadModal, setOpenFileUploadModal] = useState();
 
   // Handle folder creation
-  const handleCreateFolder = () => {};
-
-  // Handle file upload (mock implementation)
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setResources([
-        ...resources,
-        {
-          id: resources.length + 1,
-          title: file.name,
-          description: "Uploaded file",
-          fileUrl: URL.createObjectURL(file),
-        },
-      ]);
-      alert("File uploaded successfully!");
-    }
-    setShowUploadModal(false);
+  const handleCreateFolder = () => {
+    const folder = {
+      name: folderName,
+    };
+    createFolder(folder, {
+      onSuccess: () => {
+        queryClient.invalidateQueries("folder");
+        toast.success("Folder created successfully");
+        setFolderName("");
+      },
+      onError: (err) => {
+        toast.error(err.msg);
+      },
+    });
   };
 
-  const [folderName, setFolderName] = useState();
+  const handleFolderClick = (id) => {
+    const setSearchParams = searchParams[1];
+    setSearchParams((prev) => {
+      prev.set("folderId", id);
+      return prev;
+    });
+  };
 
+  const handleFileUpload = (data) => {
+    uploadFile(data, {
+      onSuccess: () => {
+        queryClient.invalidateQueries("folder");
+        toast.success("File uploaded successfully");
+        setOpenFileUploadModal(false);
+      },
+      onError: (err) => {
+        toast.error(err.msg);
+      },
+    });
+  };
+
+  if (isLoadingFolder) return <Spinner />;
   return (
     <div className="min-h-screen bg-gray-100 p-6">
+      {openFileUploadModal && (
+        <Modal>
+          <UploadFile
+            onClose={setOpenFileUploadModal}
+            onSubmit={handleFileUpload}
+            isUploadingFile={isUploadingFile}
+          />
+        </Modal>
+      )}
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8 flex justify-between items-center">
@@ -57,7 +81,7 @@ function Resources() {
           <div className="space-x-4">
             <button
               className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-all"
-              onClick={() => setShowUploadModal(true)}
+              onClick={() => setOpenFileUploadModal(true)}
             >
               Upload File
             </button>
@@ -72,24 +96,41 @@ function Resources() {
               className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-all"
               onClick={handleCreateFolder}
             >
-              Create Folder
+              {isCreatingFolder ? <Spinner /> : "Create Folder"}
             </button>
           </div>
         </div>
 
         {/* Folders */}
         <div className="mb-8">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Folders</h2>
+          <div>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              Folders
+            </h2>
+
+            <div className="flex items-center mb-2">
+              {hierarchy?.map((folder) => (
+                <div className="flex" key={folder.id}>
+                  <Link
+                    className=" block text-lg font-semibold text-gray-800"
+                    to={`/dashboard/resources?folderId=${folder.id}`}
+                  >
+                    {folder.name}
+                  </Link>
+
+                  <i className="block text-2xl ri-arrow-right-s-line"></i>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {folders.map((folder) => (
-              <div
-                key={folder.id}
-                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transform transition-transform"
-              >
-                <h3 className="text-lg font-bold text-gray-800">
-                  📁{folder.name}
-                </h3>
-              </div>
+            {folder.folders.map((folder) => (
+              <Folders
+                onFolderClick={handleFolderClick}
+                key={folder._id}
+                folder={folder}
+              />
             ))}
           </div>
         </div>
@@ -97,31 +138,28 @@ function Resources() {
         {/* Resources */}
         <div>
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">Files</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {resources.map((resource) => (
+          <div className=" flex flex-col">
+            {folder.files.length === 0 && (
+              <p className="text-base font-semibold text-gray-800 mb-4">
+                No Files
+              </p>
+            )}
+            {folder?.files.map((file) => (
               <div
-                key={resource.id}
-                className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transform transition-transform"
+                key={file._id}
+                className="flex items-center justify-between bg-white px-2 py-1 border shadow-md "
               >
-                <h3 className="text-xl font-bold text-gray-800 mb-2">
-                  {resource.title}
+                <h3 className="text-base font-bold text-gray-800">
+                  {file.original_filename}
                 </h3>
-                <p className="text-gray-600 mb-4">{resource.description}</p>
-                <div className="flex space-x-4">
+                <div className="flex">
                   <a
-                    href={resource.fileUrl}
+                    href={file.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-all"
                   >
                     View
-                  </a>
-                  <a
-                    href={resource.fileUrl}
-                    download
-                    className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-all"
-                  >
-                    Download
                   </a>
                 </div>
               </div>
@@ -129,26 +167,6 @@ function Resources() {
           </div>
         </div>
       </div>
-
-      {/* Upload File Modal */}
-      {showUploadModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4">Upload File</h2>
-            <input
-              type="file"
-              className="block w-full text-gray-700 px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-green-300"
-              onChange={handleFileUpload}
-            />
-            <button
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-all"
-              onClick={() => setShowUploadModal(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

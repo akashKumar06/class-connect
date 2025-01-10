@@ -44,36 +44,32 @@ async function createFolder(req, res) {
   }
 }
 
-async function getFolders(req, res) {
+async function getFolder(req, res) {
   try {
-    const user = await User.findById(req.user._id)
+    const folderId = req.query.folderId;
+
+    if (folderId === undefined) {
+      const user = await User.findById(req.user._id)
+        .populate("folders")
+        .populate("files");
+
+      if (!user) throw new ApiError("User not found", 400);
+      return res.status(200).json({
+        success: true,
+        folders: user.folders,
+        files: user.files,
+      });
+    }
+
+    const folder = await Folder.findById(folderId)
       .populate("folders")
       .populate("files");
-    if (!user) throw new ApiError("User not found", 400);
-    return res.status(200).json({
-      success: true,
-      folders: user.folders,
-      files: user.files,
-    });
-  } catch (error) {
-    return res.status(error?.statusCode || 400).json({
-      success: false,
-      message: error.message,
-      error,
-    });
-  }
-}
-
-async function getFolderById(req, res) {
-  try {
-    const folder = await Folder.findById(req.params.id)
-      .populate("folders")
-      .populate("files");
-
     if (!folder) throw new ApiError("Folder not found", 400);
+
     return res.status(200).json({
       success: true,
-      folder,
+      folders: folder.folders,
+      files: folder.files,
     });
   } catch (error) {
     return res.status(error?.statusCode || 400).json({
@@ -83,12 +79,33 @@ async function getFolderById(req, res) {
     });
   }
 }
+
+// async function getFolderById(req, res) {
+//   try {
+//     const folder = await Folder.findById(req.params.id)
+//       .populate("folders")
+//       .populate("files");
+
+//     if (!folder) throw new ApiError("Folder not found", 400);
+//     return res.status(200).json({
+//       success: true,
+//       folder,
+//     });
+//   } catch (error) {
+//     return res.status(error?.statusCode || 400).json({
+//       success: false,
+//       message: error.message,
+//       error,
+//     });
+//   }
+// }
 
 async function getFolderHierarchy(req, res) {
   const id = req.params.id;
-  if (!id) return res.status(200).json({ success: true, array: [] });
+  if (id === "root") return res.status(200).json({ success: true, array: [] });
 
   const array = [];
+
   async function rec(id) {
     if (id === null) {
       return;
@@ -103,4 +120,4 @@ async function getFolderHierarchy(req, res) {
   return res.status(200).json({ success: true, array });
 }
 
-export { createFolder, getFolders, getFolderById, getFolderHierarchy };
+export { createFolder, getFolder, getFolderHierarchy };

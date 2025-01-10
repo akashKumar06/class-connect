@@ -6,10 +6,6 @@ const fileSchmea = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Folder",
     },
-    format: {
-      type: String,
-      required: true,
-    },
     resource_type: {
       type: String,
       required: true,

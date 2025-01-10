@@ -71,7 +71,7 @@ export async function uploadImage(image) {
     const res = await api.patch("/update-avatar", image, {
       withCredentials: true,
       headers: {
-        "Content-Type": "multipart/for-data",
+        "Content-Type": "multipart/form-data",
       },
     });
     return res.data.user;

@@ -6,18 +6,17 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 async function addFile(req, res) {
   try {
     const file = req.file;
+    console.log(file);
     if (!file) throw new ApiError("File not found.", 400);
 
     const parentId = req.query.parentId;
     let parent = req.query.parentId;
-    if (!parentId) parent = null;
+    if (parentId === "root") parent = null;
 
     const cloudinaryResponse = await uploadOnCloudinary(file.path);
-
     const newFile = await File.create({
       url: cloudinaryResponse.url,
       resource_type: cloudinaryResponse.resource_type,
-      format: cloudinaryResponse.format,
       original_filename: cloudinaryResponse.original_filename,
     });
 

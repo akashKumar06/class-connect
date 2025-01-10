@@ -2,9 +2,8 @@ import express from "express";
 import { authUser } from "../middlewares/auth.middleware.js";
 import {
   createFolder,
-  getFolderById,
   getFolderHierarchy,
-  getFolders,
+  getFolder,
 } from "../controllers/folder.controller.js";
 import { body } from "express-validator";
 const router = express.Router();
@@ -20,8 +19,8 @@ router.post(
   createFolder
 );
 
-router.get("/", authUser, getFolders);
-router.get("/:id", authUser, getFolderById);
+router.get("/", authUser, getFolder);
+// router.get("/:id", authUser, getFolderById);
 router.get("/hierarchy/:id", authUser, getFolderHierarchy);
 
 export default router;
