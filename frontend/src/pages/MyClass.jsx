@@ -1,18 +1,7 @@
 import { useState } from "react";
-
-// Dummy data for demonstration
-const classDetails = {
-  className: "CS101 - Intro to Computer Science",
-  startYear: 2023,
-  endYear: 2025,
-  branch: "Computer Science",
-  students: [
-    { id: 1, name: "John Doe", username: "john_doe" },
-    { id: 2, name: "Jane Smith", username: "jane_smith" },
-    { id: 3, name: "Mike Jones", username: "mike_jones" },
-    { id: 4, name: "Sara Lee", username: "sara_lee" },
-  ],
-};
+import Spinner from "../components/Spinner";
+import { useUser } from "../hooks/useUser";
+import { Link } from "react-router";
 
 function MyClass() {
   const [notifications, setNotifications] = useState([
@@ -32,9 +21,9 @@ function MyClass() {
   const [searchQuery, setSearchQuery] = useState("");
 
   // Filter students based on the search query
-  const filteredStudents = classDetails.students.filter((student) =>
-    student.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // const filteredStudents = classDetails.students.filter((student) =>
+  //   student.name.toLowerCase().includes(searchQuery.toLowerCase())
+  // );
 
   const handlePostMessage = (e) => {
     e.preventDefault();
@@ -54,15 +43,27 @@ function MyClass() {
     setNewMessage("");
   };
 
+  const { data: user, isPending } = useUser();
+
+  if (isPending) return <Spinner />;
+  if (!user.class)
+    return (
+      <p className="text-center">
+        <h2 className="text-lg font-medium">You not belong to any class👻</h2>
+        <Link to="/dashboard/join-class" className="underline text-blue-600">
+          join now
+        </Link>
+      </p>
+    );
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* Header */}
       <div className="bg-white p-6 shadow-md rounded-lg mb-6">
-        <h1 className="text-2xl font-bold mb-2">{classDetails.className}</h1>
+        <h1 className="text-2xl font-bold mb-2">{user.class.name}</h1>
         <p className="text-gray-600">
-          Session: {classDetails.startYear} - {classDetails.endYear}
+          Session: {user.class.startYear} - {user.class.endYear}
         </p>
-        <p className="text-gray-600">Branch: {classDetails.branch}</p>
+        <p className="text-gray-600">Branch: {user.class.department}</p>
       </div>
 
       {/* Notifications Section */}
@@ -107,7 +108,7 @@ function MyClass() {
       </div>
 
       {/* Student List */}
-      <div className="bg-white p-6 shadow-md rounded-lg">
+      {/* <div className="bg-white p-6 shadow-md rounded-lg">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-bold">Students in this Class</h2>
           <input
@@ -138,7 +139,7 @@ function MyClass() {
         ) : (
           <p className="text-gray-500">No students found.</p>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

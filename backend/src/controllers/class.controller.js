@@ -16,11 +16,19 @@ async function createClass(req, res) {
     if (!name || !startYear || !endYear || !department)
       throw new ApiError("All fields are required", 400);
 
-    const isPresent = await Class.findOne({ name });
-    if (isPresent)
-      throw new ApiError("Class with this name already present.", 400);
+    const isAlreadyCreated = await Class.findOne({ admin: req.user._id });
+    if (isAlreadyCreated) throw new ApiError("Class is already created.", 400);
 
-    const cls = await Class.create({ name, startYear, endYear, department });
+    const cls = await Class.create({
+      admin: req.user._id,
+      name,
+      startYear,
+      endYear,
+      department,
+    });
+
+    await User.findByIdAndUpdate(req.user._id, { class: cls._id });
+
     return res.status(201).json({
       success: true,
       message: "Class created successfully",
@@ -147,6 +155,7 @@ async function getClasses(req, res) {
     });
   }
 }
+
 export {
   createClass,
   getClasses,

@@ -8,7 +8,7 @@ export function useUser() {
   });
 
   return {
-    user: data,
+    data,
     isPending,
   };
 }

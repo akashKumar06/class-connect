@@ -1,31 +1,40 @@
 import { useState } from "react";
-
+import { useCreateClass } from "../hooks/useCreateClass";
+import Spinner from "../components/Spinner";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
 function CreateClass() {
   const [className, setClassName] = useState("");
   const [startYear, setStartYear] = useState("");
   const [endYear, setEndYear] = useState("");
   const [branch, setBranch] = useState("");
-  const [message, setMessage] = useState("");
 
+  const { mutate: createClass, isPending: isCreatingClass } = useCreateClass();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const handleCreateClass = (e) => {
     e.preventDefault();
 
-    if (!className || !startYear || !endYear || !branch) {
-      setMessage("Please fill out all fields.");
-      return;
-    }
-
-    if (parseInt(startYear) >= parseInt(endYear)) {
-      setMessage("Start year must be less than end year.");
-      return;
-    }
-
-    // Simulate API call
-    setMessage(`Class "${className}" created successfully!`);
-    setClassName("");
-    setStartYear("");
-    setEndYear("");
-    setBranch("");
+    createClass(
+      { name: className, startYear, endYear, department: branch },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries("user");
+          toast.success("Class created successfully");
+          navigate("/dashboard/my-class");
+        },
+        onError: (err) => {
+          toast.error(err.message);
+        },
+        onSettled: () => {
+          setClassName("");
+          setStartYear("");
+          setEndYear("");
+          setBranch("");
+        },
+      }
+    );
   };
 
   return (
@@ -101,21 +110,8 @@ function CreateClass() {
             type="submit"
             className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
           >
-            Create Class
+            {isCreatingClass ? <Spinner /> : "Create Class"}
           </button>
-
-          {/* Message */}
-          {message && (
-            <p
-              className={`mt-4 text-center font-medium ${
-                message.includes("successfully")
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {message}
-            </p>
-          )}
         </form>
       </div>
     </div>

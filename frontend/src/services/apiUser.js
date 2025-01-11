@@ -30,6 +30,7 @@ export async function login(user) {
       withCredentials: true,
     });
     const data = res.data;
+    console.log(data);
     return data.user;
   } catch (error) {
     console.log(error);

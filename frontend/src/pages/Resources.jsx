@@ -107,6 +107,11 @@ function Resources() {
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">
               Folders
             </h2>
+            {folder.folders.length === 0 && (
+              <p className="text-base font-semibold text-gray-800 mb-4">
+                No Folders
+              </p>
+            )}
 
             <div className="flex items-center mb-2">
               {hierarchy?.map((folder) => (

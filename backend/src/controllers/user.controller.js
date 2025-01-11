@@ -66,7 +66,13 @@ async function login(req, res) {
 
 async function getProfile(req, res) {
   try {
-    return res.status(200).json({ success: true, user: req.user });
+    const user = await User.findById(req.user._id)
+      .populate("folders")
+      .populate("files")
+      .populate("class");
+
+    if (!user) throw new ApiError("User not found", 400);
+    return res.status(200).json({ success: true, user });
   } catch (error) {
     return res
       .status(error?.statusCode || 400)

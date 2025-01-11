@@ -12,7 +12,7 @@ import { useUpdatePassword } from "../hooks/useUpdatePassword";
 
 function Profile() {
   const queryClient = useQueryClient();
-  const { user, isPending } = useUser();
+  const { data: user, isPending } = useUser();
   const { mutate: uploadImage, isPending: isUploadingImage } = useImageUpload();
   const { mutate: updatePassword, isPending: isUpdatingPassword } =
     useUpdatePassword();

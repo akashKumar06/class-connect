@@ -2,12 +2,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, Outlet, useNavigate } from "react-router";
 import { logout } from "../services/apiUser";
 import Spinner from "../components/Spinner";
+import { useUser } from "../hooks/useUser";
 
 function Dashboard() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { mutate, isPending } = useMutation({
+  const { mutate, isPending: isLoggingOut } = useMutation({
     mutationFn: logout,
     onSuccess: () => {
       queryClient.removeQueries();
@@ -15,6 +16,7 @@ function Dashboard() {
     },
   });
 
+  const { data: user, isPending } = useUser();
   function handleLogout() {
     mutate();
   }
@@ -51,12 +53,15 @@ function Dashboard() {
           >
             Join Class
           </Link>
-          <Link
-            to="create-class"
-            className="block text-lg hover:bg-green-700 px-4 py-2 rounded-md transition-all duration-300"
-          >
-            Create Class
-          </Link>
+
+          {user.isCr && !user.class && (
+            <Link
+              to="create-class"
+              className="block text-lg hover:bg-green-700 px-4 py-2 rounded-md transition-all duration-300"
+            >
+              Create Class
+            </Link>
+          )}
           <Link
             to="my-class"
             className="block text-lg hover:bg-green-700 px-4 py-2 rounded-md transition-all duration-300"
@@ -76,7 +81,7 @@ function Dashboard() {
             onClick={handleLogout}
             className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition-all duration-300"
           >
-            {isPending ? <Spinner /> : "Logout"}
+            {isLoggingOut ? <Spinner /> : "Logout"}
           </button>
         </header>
 

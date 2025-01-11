@@ -1,10 +1,14 @@
 import mongoose from "mongoose";
 const classSchema = new mongoose.Schema(
   {
+    admin: {
+      ref: "User",
+      type: mongoose.Schema.Types.ObjectId,
+    },
     name: {
       type: String,
       required: true,
-      unique: true,
+      unique: [true, "Class with classname already exists."],
       index: true,
     },
     startYear: {
