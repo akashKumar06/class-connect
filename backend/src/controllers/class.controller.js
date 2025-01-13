@@ -114,29 +114,6 @@ async function deleteStudentFromClass(req, res) {
   }
 }
 
-async function addStudentToClass(req, res) {
-  try {
-    const { classId, studentId } = req.params;
-    if (!studentId) throw new ApiError("Student ID is required", 404);
-
-    const student = await User.findById(studentId);
-    if (!student) throw new ApiError("Student not found", 404);
-
-    student.class = classId;
-    await student.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Student added to class successfully",
-    });
-  } catch (error) {
-    return res.staus(error?.statusCode || 400).json({
-      success: false,
-      message: error?.message,
-    });
-  }
-}
-
 async function getClasses(req, res) {
   try {
     const { query } = req.query;
@@ -156,11 +133,74 @@ async function getClasses(req, res) {
   }
 }
 
+async function joinClass(req, res) {
+  try {
+    const { studentId, classId } = req.params;
+    if (!studentId || !classId)
+      throw new ApiError("studentId and classId required", 400);
+
+    const cls = await Class.findById(classId);
+    if (!cls) throw new ApiError("Not a valid class", 400);
+    const stu = await User.findById(studentId);
+    if (!stu) throw new ApiError("Not a valid student", 400);
+
+    cls.requests.push(stu._id);
+    stu.hasJoined = "pending";
+    stu.class = cls._id;
+
+    await cls.save();
+    await stu.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Requested successfully",
+    });
+  } catch (error) {
+    return res.status(error?.statusCode || 400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+
+async function handleClassRequest(req, res) {
+  try {
+    const { classId, studentId, status } = req.params;
+
+    if (!classId) throw new ApiError("classId is required", 400);
+    const cls = await Class.findById(classId);
+    if (!cls) throw new ApiError("Not a valid class.", 404);
+
+    if (!cls.requests.includes(studentId))
+      throw new ApiError("Not a valid student.", 400);
+
+    const stu = await User.findById(studentId);
+    if (!stu) throw new ApiError("Not a valid Student.", 404);
+
+    stu.hasJoined = status;
+    cls.requests.filter((req) => req !== stu._id);
+
+    await stu.save();
+    await cls.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Student added successfully.",
+    });
+  } catch (error) {
+    return res.status(error?.statusCode || 400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
+
 export {
   createClass,
   getClasses,
   getClass,
   editClass,
   deleteStudentFromClass,
-  addStudentToClass,
+  handleClassRequest,
+  joinClass,
 };

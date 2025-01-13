@@ -1,12 +1,13 @@
 import express from "express";
 import { body } from "express-validator";
 import {
-  addStudentToClass,
   createClass,
   deleteStudentFromClass,
   editClass,
   getClass,
   getClasses,
+  joinClass,
+  handleClassRequest,
 } from "../controllers/class.controller.js";
 import { authCR, authUser } from "../middlewares/auth.middleware.js";
 const router = express.Router();
@@ -41,7 +42,14 @@ router.patch("/:id", authUser, authCR, editClass);
 // remove student from class - /classes/:classId/:studentid
 router.delete("/:studentId", authUser, authCR, deleteStudentFromClass);
 
-// add student to class - /classes/:studentid
-router.patch("/:classId/:studentId", authUser, authCR, addStudentToClass);
+// request for class - /classes/:classId/:studentId;
+router.get("/:classId/:studentId", authUser, joinClass);
 
+// handle class request
+router.get(
+  "/:studentId/:classId/:status",
+  authUser,
+  authCR,
+  handleClassRequest
+);
 export default router;

@@ -23,6 +23,7 @@ const classSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    requests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }
 );

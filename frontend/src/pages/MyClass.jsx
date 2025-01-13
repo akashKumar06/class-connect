@@ -58,12 +58,33 @@ function MyClass() {
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {/* Header */}
-      <div className="bg-white p-6 shadow-md rounded-lg mb-6">
-        <h1 className="text-2xl font-bold mb-2">{user.class.name}</h1>
-        <p className="text-gray-600">
-          Session: {user.class.startYear} - {user.class.endYear}
-        </p>
-        <p className="text-gray-600">Branch: {user.class.department}</p>
+      <div className="flex h-60 gap-4 mb-6">
+        <div className="bg-white p-6 shadow-md rounded-lg w-2/5">
+          <h1 className="text-2xl font-bold mb-2">{user.class.name}</h1>
+          <p className="text-gray-600">
+            Session: {user.class.startYear} - {user.class.endYear}
+          </p>
+          <p className="text-gray-600">Branch: {user.class.department}</p>
+        </div>
+        <div className="bg-white w-3/5 rounded-lg p-6">
+          <h1 className="text-2xl font-bold mb-2">Join Requests</h1>
+          <ul>
+            <li className="py-4 flex justify-between items-center bg-gray-100 p-4 rounded-lg">
+              <div>
+                <p className="text-lg font-medium">Akash Kumar</p>
+                <p className="text-gray-500">akash@gmail.com</p>
+              </div>
+              <div className="flex gap-2">
+                <button className=" text-white px-4 py-1 rounded-lg bg-green-500 hover:bg-green-600 transition">
+                  Accept
+                </button>
+                <button className="bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600 transition">
+                  Reject
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
 
       {/* Notifications Section */}

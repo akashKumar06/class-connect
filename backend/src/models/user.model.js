@@ -48,6 +48,11 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: String, // cloudinary url
     },
+    hasJoined: {
+      type: String,
+      enum: ["not_requested", "accepted", "pending", "rejected"],
+      default: "not_requested",
+    },
     folders: [{ type: mongoose.Schema.Types.ObjectId, ref: "Folder" }],
     files: [{ type: mongoose.Schema.Types.ObjectId, ref: "File" }],
   },

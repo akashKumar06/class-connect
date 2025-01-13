@@ -52,3 +52,37 @@ export async function getClasses(query) {
     throw err;
   }
 }
+
+export async function joinClass(studentId, classId) {
+  try {
+    const res = await api.get(`/${classId}/${studentId}`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    const err = new Error();
+    err.message = error.response.data.message;
+    throw err;
+  }
+}
+
+export async function handleClassRequest(studentId, classId, status) {
+  try {
+    const res = api.get(`/${classId}/${studentId}/${status}`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    const err = new Error();
+    err.message = error.response.data.message;
+    throw err;
+  }
+}

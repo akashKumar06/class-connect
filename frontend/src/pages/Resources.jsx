@@ -26,6 +26,10 @@ function Resources() {
 
   // Handle folder creation
   const handleCreateFolder = () => {
+    if (folderName.trim() === "") {
+      toast.error("folder name cannot be empty.");
+      return;
+    }
     const folder = {
       name: folderName,
     };
@@ -91,6 +95,7 @@ function Resources() {
               className="px-4 py-2 border rounded-md focus:outline-none focus:ring focus:ring-green-300"
               value={folderName}
               onChange={(e) => setFolderName(e.target.value)}
+              required
             />
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-all"
@@ -107,11 +112,6 @@ function Resources() {
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">
               Folders
             </h2>
-            {folder.folders.length === 0 && (
-              <p className="text-base font-semibold text-gray-800 mb-4">
-                No Folders
-              </p>
-            )}
 
             <div className="flex items-center mb-2">
               {hierarchy?.map((folder) => (
@@ -127,6 +127,11 @@ function Resources() {
                 </div>
               ))}
             </div>
+            {folder.folders.length === 0 && (
+              <p className="text-base font-semibold text-gray-800 mb-4">
+                No Folders
+              </p>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
