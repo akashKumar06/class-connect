@@ -141,6 +141,14 @@ async function joinClass(req, res) {
 
     const cls = await Class.findById(classId);
     if (!cls) throw new ApiError("Not a valid class", 400);
+
+    const isRequested = await Class.findOne({
+      requests: { $elemMatch: { studentId } },
+    });
+
+    if (isRequested)
+      throw new ApiError("Already requested. Wait for approval.", 400);
+
     const stu = await User.findById(studentId);
     if (!stu) throw new ApiError("Not a valid student", 400);
 
@@ -178,14 +186,14 @@ async function handleClassRequest(req, res) {
     if (!stu) throw new ApiError("Not a valid Student.", 404);
 
     stu.hasJoined = status;
-    cls.requests.filter((req) => req !== stu._id);
+    cls.requests = cls.requests.filter((req) => req === stu._id);
 
     await stu.save();
     await cls.save();
 
     return res.status(200).json({
       success: true,
-      message: "Student added successfully.",
+      message: "status updated successfully.",
     });
   } catch (error) {
     return res.status(error?.statusCode || 400).json({
@@ -195,6 +203,24 @@ async function handleClassRequest(req, res) {
   }
 }
 
+async function getClassRequests(req, res) {
+  try {
+    const classId = req.params.id;
+    if (!classId) throw new ApiError("classId not found.");
+
+    const cls = await Class.findById(classId).populate("requests");
+    if (!cls) throw new ApiError("class not found.", 404);
+    return res.status(200).json({
+      success: true,
+      data: cls,
+    });
+  } catch (error) {
+    return res.status(error?.statusCode || 400).json({
+      success: false,
+      message: error.message,
+    });
+  }
+}
 export {
   createClass,
   getClasses,
@@ -203,4 +229,5 @@ export {
   deleteStudentFromClass,
   handleClassRequest,
   joinClass,
+  getClassRequests,
 };

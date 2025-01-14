@@ -1,8 +1,10 @@
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "https://class-connect-backend-jx9w.onrender.com/api/users",
-});
+// const api = axios.create({
+//   baseURL: "https://class-connect-backend-jx9w.onrender.com/api/users",
+// });
+
+const api = axios.create({ baseURL: "http://localhost:8000/api/users" });
 
 export async function register(user) {
   try {
@@ -30,7 +32,6 @@ export async function login(user) {
       withCredentials: true,
     });
     const data = res.data;
-    console.log(data);
     return data.user;
   } catch (error) {
     console.log(error);

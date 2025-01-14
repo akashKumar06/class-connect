@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const api = axios.create({ baseURL: "https://class-connect-backend-jx9w.onrender.com/api/classes" });
+// const api = axios.create({ baseURL: "https://class-connect-backend-jx9w.onrender.com/api/classes" });
+const api = axios.create({ baseURL: "http://localhost:8000/api/classes" });
 
 export async function createClass(classData) {
   try {
@@ -70,9 +71,27 @@ export async function joinClass(studentId, classId) {
   }
 }
 
-export async function handleClassRequest(studentId, classId, status) {
+export async function handleClassRequest(classId, studentId, status) {
   try {
-    const res = api.get(`/${classId}/${studentId}/${status}`, {
+    const res = await api.get(`/${studentId}/${classId}/${status}`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    const err = new Error();
+    err.message = error.response.data.message;
+    throw err;
+  }
+}
+
+export async function getClassRequests(classId) {
+  try {
+    const res = await api.get(`/requests/${classId}`, {
       withCredentials: true,
       headers: {
         "Content-Type": "application/json",
@@ -80,7 +99,6 @@ export async function handleClassRequest(studentId, classId, status) {
     });
     return res.data;
   } catch (error) {
-    console.log(error);
     const err = new Error();
     err.message = error.response.data.message;
     throw err;

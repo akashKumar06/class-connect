@@ -15,7 +15,7 @@ function ProtectedRoute({ children }) {
   }, [user, isPending, navigate]);
 
   if (isPending) return <Spinner />;
-  if (user) return <>{children}</>;
+  if (user) return children;
 }
 
 export default ProtectedRoute;

@@ -8,6 +8,7 @@ import {
   getClasses,
   joinClass,
   handleClassRequest,
+  getClassRequests,
 } from "../controllers/class.controller.js";
 import { authCR, authUser } from "../middlewares/auth.middleware.js";
 const router = express.Router();
@@ -35,6 +36,9 @@ router.get("/", authUser, getClasses);
 
 // get class - /classes/:id
 router.get("/:id", authUser, getClass);
+
+// get class requests
+router.get("/requests/:id", authUser, authCR, getClassRequests);
 
 // edit class - /classes/:id
 router.patch("/:id", authUser, authCR, editClass);
