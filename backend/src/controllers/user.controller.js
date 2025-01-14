@@ -4,6 +4,7 @@ import User from "../models/user.model.js";
 import BlackListToken from "../models/blacklistToken.model.js";
 import ApiError from "../utils/apiError.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { cookieHeader } from "../utils/constants.js";
 
 async function register(req, res) {
   try {
@@ -52,7 +53,7 @@ async function login(req, res) {
 
     const token = user.generateToken();
 
-    return res.status(200).cookie("token", token).json({
+    return res.status(200).cookie("token", token, cookieHeader).json({
       success: true,
       token,
       user,
@@ -87,7 +88,7 @@ async function logout(req, res) {
 
     return res
       .status(200)
-      .clearCookie("token")
+      .clearCookie("token", cookieHeader)
       .json({ success: true, message: "User logged out successfully" });
   } catch (error) {
     return res
