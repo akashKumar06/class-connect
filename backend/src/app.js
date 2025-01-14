@@ -9,7 +9,7 @@ import classRouter from "./routes/class.routes.js";
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URI,
     methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
     credentials: true,
   })
