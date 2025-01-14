@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/api/files",
+  baseURL: "https://class-connect-backend-jx9w.onrender.com/api/files",
 });
 
 export async function uploadFile(data, parentId) {

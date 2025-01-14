@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000/api/folders",
+  baseURL: "https://class-connect-backend-jx9w.onrender.com/api/folders",
 });
 
 export async function createFolder(folder, id) {
