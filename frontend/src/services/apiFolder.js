@@ -7,7 +7,7 @@ import axios from "axios";
 // const api = axios.create({ baseURL: "http://localhost:8000/api/folders" });
 
 const api = axios.create({
-  baseURL: `${import.meta.env.BASE_URL}/api/folders`,
+  baseURL: `${import.meta.env.VITE_BASE_URL}/api/folders`,
 });
 export async function createFolder(folder, id) {
   try {

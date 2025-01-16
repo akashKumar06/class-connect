@@ -6,7 +6,7 @@ import axios from "axios";
 
 // const api = axios.create({ baseURL: "http://localhost:8000/api/users" });
 const api = axios.create({
-  baseURL: `${import.meta.env.BASE_URL}/api/users`,
+  baseURL: `${import.meta.env.VITE_BASE_URL}/api/users`,
 });
 
 export async function register(user) {
