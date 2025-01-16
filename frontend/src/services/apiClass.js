@@ -1,7 +1,10 @@
 import axios from "axios";
 
 // const api = axios.create({ baseURL: "https://class-connect-backend-jx9w.onrender.com/api/classes" });
-const api = axios.create({ baseURL: "http://localhost:8000/api/classes" });
+// const api = axios.create({ baseURL: "http://localhost:8000/api/classes" });
+const api = axios.create({
+  baseURL: `${import.meta.env.BASE_URL}/api/classes`,
+});
 
 export async function createClass(classData) {
   try {

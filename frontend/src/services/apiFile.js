@@ -3,7 +3,10 @@ import axios from "axios";
 // const api = axios.create({
 //   baseURL: "https://class-connect-backend-jx9w.onrender.com/api/files",
 // });
-const api = axios.create({ baseURL: "http://localhost:8000/api/files" });
+// const api = axios.create({ baseURL: "http://localhost:8000/api/files" });
+const api = axios.create({
+  baseURL: `${import.meta.env.BASE_URL}/api/files`,
+});
 
 export async function uploadFile(data, parentId) {
   try {

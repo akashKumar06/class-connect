@@ -4,8 +4,11 @@ import axios from "axios";
 //   baseURL: "https://class-connect-backend-jx9w.onrender.com/api/folders",
 // });
 
-const api = axios.create({ baseURL: "http://localhost:8000/api/folders" });
+// const api = axios.create({ baseURL: "http://localhost:8000/api/folders" });
 
+const api = axios.create({
+  baseURL: `${import.meta.env.BASE_URL}/api/folders`,
+});
 export async function createFolder(folder, id) {
   try {
     let query = `/create-folder`;

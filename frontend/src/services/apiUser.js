@@ -4,7 +4,10 @@ import axios from "axios";
 //   baseURL: "https://class-connect-backend-jx9w.onrender.com/api/users",
 // });
 
-const api = axios.create({ baseURL: "http://localhost:8000/api/users" });
+// const api = axios.create({ baseURL: "http://localhost:8000/api/users" });
+const api = axios.create({
+  baseURL: `${import.meta.env.BASE_URL}/api/users`,
+});
 
 export async function register(user) {
   try {
