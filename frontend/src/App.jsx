@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "react-hot-toast";
@@ -28,27 +28,29 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<DashboardHeroSection />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="resources" element={<Resources />} />
-          <Route path="join-class" element={<JoinClass />} />
-          <Route path="chat-room" element={<ChatRoom />} />
-          <Route path="create-class" element={<CreateClass />} />
-          <Route path="my-class" element={<MyClass />} />
-        </Route>
-      </Routes>
+      <BrowserRouter basename="/">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<DashboardHeroSection />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="resources" element={<Resources />} />
+            <Route path="join-class" element={<JoinClass />} />
+            <Route path="chat-room" element={<ChatRoom />} />
+            <Route path="create-class" element={<CreateClass />} />
+            <Route path="my-class" element={<MyClass />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
       <Toaster
         position="top-center"
         gutter={12}
