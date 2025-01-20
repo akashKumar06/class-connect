@@ -14,7 +14,9 @@ async function uploadOnCloudinary(localFilePath) {
     const uploadResult = await cloudinary.uploader.upload(localFilePath, {
       folder: "ClassConnect",
     });
+
     fs.unlinkSync(localFilePath);
+
     return uploadResult;
   } catch (error) {
     if (localFilePath) fs.unlinkSync(localFilePath);

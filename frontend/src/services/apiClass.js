@@ -2,8 +2,9 @@ import axios from "axios";
 
 // const api = axios.create({ baseURL: "https://class-connect-backend-jx9w.onrender.com/api/classes" });
 // const api = axios.create({ baseURL: "http://localhost:8000/api/classes" });
+
 const api = axios.create({
-  baseURL: `${import.meta.env.VIYE_BASE_URL}/api/classes`,
+  baseURL: `${import.meta.env.VITE_BASE_URL}/api/classes`,
 });
 
 export async function createClass(classData) {
@@ -41,13 +42,13 @@ export async function getClass() {
 
 export async function getClasses(query) {
   try {
-    const res = await api.get("/", {
-      params: { query },
+    const res = await api.get(`/?query=${query}`, {
       withCredentials: true,
       headers: {
         "Content-Type": "application/json",
       },
     });
+
     return res.data.classes;
   } catch (error) {
     console.log(error);
