@@ -7,6 +7,7 @@ import fileRouter from "./routes/file.routes.js";
 import classRouter from "./routes/class.routes.js";
 
 const app = express();
+console.log(process.env.FRONTEND_URL);
 app.use(
   cors({
     origin: process.env.FRONTEND_URL,
