@@ -1,14 +1,14 @@
-import app from "./app.js";
 import connectDB from "./db/index.js";
+import server from "./socket.js";
 
 (async () => {
   try {
     await connectDB();
-    app.on("error", (err) => {
+    server.on("error", (err) => {
       console.log(err);
     });
 
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
       console.log(`Server is listening at port ${process.env.PORT}🌟`);
     });
   } catch (error) {

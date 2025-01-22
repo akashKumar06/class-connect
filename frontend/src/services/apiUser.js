@@ -1,10 +1,6 @@
 import axios from "axios";
+import socket from "../utils/socket.js";
 
-// const api = axios.create({
-//   baseURL: "https://class-connect-backend-jx9w.onrender.com/api/users",
-// });
-
-// const api = axios.create({ baseURL: "http://localhost:8000/api/users" });
 const api = axios.create({
   baseURL: `${import.meta.env.VITE_BASE_URL}/api/users`,
 });
@@ -18,7 +14,9 @@ export async function register(user) {
       withCredentials: true,
     });
     const data = res.data;
-    if (!data.success) throw new Error(data.message);
+    // connection to socket is established
+    socket.connect();
+
     return data.success;
   } catch (error) {
     console.log(error);
@@ -35,6 +33,9 @@ export async function login(user) {
       withCredentials: true,
     });
     const data = res.data;
+    // connection to socket is established
+    console.log(socket);
+    socket.connect();
     return data.user;
   } catch (error) {
     console.log(error);

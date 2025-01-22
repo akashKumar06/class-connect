@@ -13,9 +13,13 @@ function UserClass({ user }) {
         <p className="text-gray-600">Branch: {user.class.department}</p>
       </div>
       <div className="mt-4 flex w-full items-center h-96 gap-4">
-        <div className="bg-white p-4 shadow-md rounded-lg w-1/2 h-full overflow-y-auto overflow-x-hidden no-scrollbar">
+        <div
+          className={`bg-white p-4 shadow-md rounded-lg h-full overflow-y-auto overflow-x-hidden no-scrollbar ${
+            user.isCR ? "w-1/2" : "w-full"
+          }`}
+        >
           <h1 className="text-2xl font-bold mb-2">Notifications</h1>
-          {user.isCr && <NotificationForm />}
+          {user.isCR && <NotificationForm />}
           <Notifications />
         </div>
         {user.isCR && <JoinRequests classId={user.class._id} />}

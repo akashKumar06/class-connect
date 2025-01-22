@@ -23,6 +23,12 @@ const classSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    notifications: [
+      {
+        message: { type: String },
+        postedAt: { type: Date, default: Date.now },
+      },
+    ],
     requests: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   { timestamps: true }

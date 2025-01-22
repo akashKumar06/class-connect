@@ -6,6 +6,7 @@ import { useJoinClass } from "../hooks/useJoinClass";
 import { toast } from "react-hot-toast";
 import { useUser } from "../hooks/useUser";
 import ClassInfo from "../components/ClassInfo";
+import socket from "../utils/socket";
 
 function JoinClass() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,12 +20,15 @@ function JoinClass() {
   };
 
   const queryClient = useQueryClient();
+
   const handleJoinClass = (classId) => {
     setClassId(() => classId);
+
     const data = {
       studentId: user._id,
       classId: classId,
     };
+
     joinClass(data, {
       onSuccess: async () => {
         queryClient.invalidateQueries({

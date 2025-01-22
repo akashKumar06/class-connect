@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 import Class from "../models/class.model.js";
 import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
+import { io } from "../socket.js";
 
 async function createClass(req, res) {
   try {
@@ -159,6 +160,8 @@ async function joinClass(req, res) {
     await cls.save();
     await stu.save();
 
+    // send the realtime joining to the CR
+
     return res.status(200).json({
       success: true,
       message: "Requested successfully",
@@ -221,6 +224,71 @@ async function getClassRequests(req, res) {
     });
   }
 }
+
+async function postNotification(req, res) {
+  try {
+    const { message } = req.body;
+
+    if (!message) throw new ApiError("message cannot be empty", 400);
+    const user = req.user;
+    if (!user.class) throw new ApiError("Not a valid user", 400);
+
+    const classId = user.class;
+    const cls = await Class.findById(classId);
+    cls.notifications.push({ message });
+    await cls.save();
+
+    io.emit(
+      "class_notification",
+      cls.notifications[cls.notifications.length - 1]
+    );
+
+    return res.status(200).json({ notifications: cls.notifications });
+  } catch (error) {
+    return res
+      .status(error?.statusCode || 500)
+      .json({ message: error?.message || "Internal server error" });
+  }
+}
+
+async function getNotifications(req, res) {
+  try {
+    const user = req.user;
+    if (!user.class) throw new ApiError("Not a valid user", 400);
+
+    const cls = await Class.findById(user.class);
+    if (!cls) throw new ApiError("Class not found.", 400);
+
+    return res.status(200).json({ notifications: cls.notifications });
+  } catch (error) {
+    return res
+      .status(error?.statusCode || 500)
+      .json({ message: error?.message || "Internal server error" });
+  }
+}
+
+async function deleteNotifications(req, res) {
+  try {
+    const { classId, id } = req.params;
+    if (!classId) throw new ApiError("No class found", 400);
+    const cls = await Class.findByIdAndUpdate(
+      classId,
+      {
+        $pull: { notifications: { _id: id } },
+      },
+      { new: true }
+    );
+
+    io.emit("delete_notification", id);
+
+    return res.status(200).json({ notifications: cls.notifications });
+  } catch (error) {
+    return res
+      .status(error?.statusCode || 500)
+      .json({ message: error?.message || "Internal server error" });
+  }
+}
+
 export {
   createClass,
   getClasses,
@@ -230,4 +298,7 @@ export {
   handleClassRequest,
   joinClass,
   getClassRequests,
+  postNotification,
+  getNotifications,
+  deleteNotifications,
 };

@@ -108,3 +108,49 @@ export async function getClassRequests(classId) {
     throw err;
   }
 }
+
+export async function postNotification(message) {
+  try {
+    const res = await api.post(`/notifications`, message, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(res);
+    return res.data.notifications;
+  } catch (error) {
+    const err = new Error();
+    err.message = error.response.data.message;
+    throw err;
+  }
+}
+
+export async function getNotifications() {
+  try {
+    const res = await api.get(`/notifications`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data.notifications;
+  } catch (error) {
+    const err = new Error();
+    err.message = error.response.data.message;
+    throw err;
+  }
+}
+
+export async function deleteNotifications(classId, id) {
+  try {
+    const res = await api.delete(`/notifications/${classId}/${id}`, {
+      withCredentials: true,
+    });
+    return res.data.notifications;
+  } catch (error) {
+    const err = new Error();
+    err.message = error.response.data.message;
+    throw err;
+  }
+}
