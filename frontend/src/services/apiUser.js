@@ -19,8 +19,12 @@ export async function register(user) {
 
     return data.success;
   } catch (error) {
-    console.log(error);
-    throw new Error(error.message);
+    const errArr = error.response.data.error;
+    let errorMessage = "";
+    errArr.forEach((elem) => {
+      errorMessage = errorMessage + elem.msg + ", ";
+    });
+    throw new Error(errorMessage);
   }
 }
 
@@ -34,12 +38,11 @@ export async function login(user) {
     });
     const data = res.data;
     // connection to socket is established
-    console.log(socket);
-    socket.connect();
+    socket.emit("login", data.user._id);
     return data.user;
   } catch (error) {
-    console.log(error);
-    throw new Error(error.message);
+    const err = error.response.data.message;
+    throw new Error(err);
   }
 }
 
@@ -49,7 +52,7 @@ export async function logout() {
       withCredentials: true,
     });
     const data = res.data;
-    if (!data.success) throw new Error(data.message);
+    socket.emit("logout");
     return data.success;
   } catch (error) {
     console.log(error);

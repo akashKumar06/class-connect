@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { login } from "../services/apiUser";
 import { useState } from "react";
 import Spinner from "../components/Spinner";
+import { toast } from "react-hot-toast";
 
 function Login() {
   const [data, setData] = useState("");
@@ -18,7 +19,7 @@ function Login() {
       navigate("/dashboard", { replace: true });
     },
     onError: (err) => {
-      console.log(err);
+      toast.error(err.message);
     },
   });
 

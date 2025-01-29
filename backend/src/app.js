@@ -6,6 +6,7 @@ import userRouter from "./routes/user.routes.js";
 import folderRouter from "./routes/folder.routes.js";
 import fileRouter from "./routes/file.routes.js";
 import classRouter from "./routes/class.routes.js";
+import messageRouter from "./routes/message.routes.js";
 const app = express();
 
 app.use(
@@ -25,5 +26,5 @@ app.use("/api/users", userRouter);
 app.use("/api/folders", folderRouter);
 app.use("/api/files", fileRouter);
 app.use("/api/classes", classRouter);
-
+app.use("/api/messages", messageRouter);
 export default app;

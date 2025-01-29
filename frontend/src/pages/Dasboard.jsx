@@ -9,7 +9,7 @@ function Dashboard() {
 
   if (isFetchingUser) return <Spinner />;
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-200">
       <Sidebar user={user} />
       <div className="flex-1 p-6">
         <Header />

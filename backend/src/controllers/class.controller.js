@@ -2,7 +2,7 @@ import { validationResult } from "express-validator";
 import Class from "../models/class.model.js";
 import User from "../models/user.model.js";
 import ApiError from "../utils/apiError.js";
-import { io } from "../socket.js";
+import { io, userMap } from "../socket.js";
 
 async function createClass(req, res) {
   try {
@@ -28,7 +28,10 @@ async function createClass(req, res) {
       department,
     });
 
-    await User.findByIdAndUpdate(req.user._id, { class: cls._id });
+    await User.findByIdAndUpdate(req.user._id, {
+      class: cls._id,
+      hasJoined: "accepted",
+    });
 
     return res.status(201).json({
       success: true,
@@ -144,7 +147,7 @@ async function joinClass(req, res) {
     if (!cls) throw new ApiError("Not a valid class", 400);
 
     const isRequested = await Class.findOne({
-      requests: { $elemMatch: { studentId } },
+      requests: studentId,
     });
 
     if (isRequested)
@@ -161,6 +164,9 @@ async function joinClass(req, res) {
     await stu.save();
 
     // send the realtime joining to the CR
+    // get the cr socket id
+    const crSocketId = userMap.get(cls.admin.toString());
+    io.to(crSocketId).emit("class_join");
 
     return res.status(200).json({
       success: true,
@@ -193,6 +199,9 @@ async function handleClassRequest(req, res) {
 
     await stu.save();
     await cls.save();
+
+    const stuSocketId = userMap.get(stu._id);
+    if (stuSocketId) io.to(stuSocketId).emit("class_joined");
 
     return res.status(200).json({
       success: true,
@@ -289,6 +298,39 @@ async function deleteNotifications(req, res) {
   }
 }
 
+async function getAllStudentsOfClass(req, res) {
+  try {
+    const { classId } = req.params;
+    const students = await User.find({ class: classId });
+    return res.status(200).json({ students });
+  } catch (error) {
+    return res
+      .status(error?.statusCode || 500)
+      .json({ message: error?.message || "Internal server error" });
+  }
+}
+
+async function leaveClass(req, res) {
+  try {
+    const id = req.user._id;
+    //  update the state of the user hasJoined = "not requested" and make class = null
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        hasJoined: "not_requested",
+        class: null,
+      },
+      { new: true }
+    );
+    return res.status(200).json({ user });
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(error?.statusCode || 500)
+      .json({ message: error?.message || "Internal server error" });
+  }
+}
+
 export {
   createClass,
   getClasses,
@@ -301,4 +343,6 @@ export {
   postNotification,
   getNotifications,
   deleteNotifications,
+  getAllStudentsOfClass,
+  leaveClass,
 };

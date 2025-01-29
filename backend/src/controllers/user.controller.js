@@ -73,6 +73,7 @@ async function getProfile(req, res) {
       .populate("class");
 
     if (!user) throw new ApiError("User not found", 400);
+
     return res.status(200).json({ success: true, user });
   } catch (error) {
     return res

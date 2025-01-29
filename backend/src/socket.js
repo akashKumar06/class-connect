@@ -10,9 +10,19 @@ const io = new Server(server, {
   },
 });
 
+const userMap = new Map();
+
 io.on("connection", (socket) => {
-  console.log(socket.id);
+  socket.on("login", (userId) => {
+    userMap.set(userId, socket.id);
+    console.log(userMap);
+  });
+
+  socket.on("logout", (userId) => {
+    userMap.delete(userId);
+    console.log(userMap);
+  });
 });
 
-export { io };
+export { io, userMap };
 export default server;

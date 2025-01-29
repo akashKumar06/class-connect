@@ -34,6 +34,9 @@ function Signup() {
           setUsername("");
           setPassword("");
         },
+        onError: (err) => {
+          toast.error(err.message);
+        },
       }
     );
   }

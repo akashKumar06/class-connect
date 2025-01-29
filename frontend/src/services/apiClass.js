@@ -154,3 +154,29 @@ export async function deleteNotifications(classId, id) {
     throw err;
   }
 }
+
+export async function getAllStudentsOfClass(classId) {
+  try {
+    const res = await api.get(`/all-students/${classId}`, {
+      withCredentials: true,
+    });
+    return res.data.students;
+  } catch (error) {
+    const err = new Error();
+    err.message = error.response.data.message;
+    throw err;
+  }
+}
+
+export async function leaveClass() {
+  try {
+    const res = await api.get("/leave-class", {
+      withCredentials: true,
+    });
+    console.log(res);
+    return true;
+  } catch (error) {
+    console.log(error);
+    throw new Error(error);
+  }
+}

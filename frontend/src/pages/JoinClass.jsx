@@ -35,6 +35,7 @@ function JoinClass() {
           queryKey: ["user"],
         });
         toast.success("Request has been sent successfully.");
+        socket.emit("class_join", data);
       },
       onError: (err) => {
         toast.error(err.message);
@@ -43,6 +44,11 @@ function JoinClass() {
   };
 
   if (isFetchingUser) return <Spinner />;
+  if (!isFetchingUser && user.hasJoined === "pending")
+    return <h1>Wait for approval by the CR</h1>;
+  if (!isFetchingUser && user.hasJoined === "accepted")
+    return <h1>You have already joined a class</h1>;
+
   return (
     <div className="min-h-screen bg-gray-100 p-6">
       {user.hasJoined === "pending" ? (

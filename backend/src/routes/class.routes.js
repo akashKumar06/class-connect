@@ -12,6 +12,8 @@ import {
   postNotification,
   getNotifications,
   deleteNotifications,
+  getAllStudentsOfClass,
+  leaveClass,
 } from "../controllers/class.controller.js";
 import { authCR, authUser } from "../middlewares/auth.middleware.js";
 const router = express.Router();
@@ -37,6 +39,7 @@ router.post(
 //getClasses given a class name
 router.get("/", authUser, getClasses);
 
+router.get("/leave-class", authUser, leaveClass);
 router.get("/notifications", authUser, getNotifications);
 router.post("/notifications", authUser, authCR, postNotification);
 router.delete(
@@ -45,6 +48,8 @@ router.delete(
   authCR,
   deleteNotifications
 );
+
+router.get("/all-students/:classId", authUser, getAllStudentsOfClass);
 
 // get class - /classes/:id
 router.get("/:id", authUser, getClass);

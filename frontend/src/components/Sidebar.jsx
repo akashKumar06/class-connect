@@ -25,14 +25,16 @@ function Sidebar({ user }) {
         >
           Chat Room
         </Link>
-        <Link
-          to="join-class"
-          className="block text-lg hover:bg-green-700 px-4 py-2 rounded-md transition-all duration-300"
-        >
-          Join Class
-        </Link>
+        {!user.isCR && (
+          <Link
+            to="join-class"
+            className="block text-lg hover:bg-green-700 px-4 py-2 rounded-md transition-all duration-300"
+          >
+            Join Class
+          </Link>
+        )}
 
-        {user.isCr && !user.class && (
+        {user.isCR && !user.class && (
           <Link
             to="create-class"
             className="block text-lg hover:bg-green-700 px-4 py-2 rounded-md transition-all duration-300"

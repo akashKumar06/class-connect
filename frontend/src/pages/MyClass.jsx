@@ -2,9 +2,19 @@ import Spinner from "../components/Spinner";
 import { useUser } from "../hooks/useUser";
 import { Link } from "react-router";
 import UserClass from "../components/UserClass";
+import { useEffect } from "react";
+import socket from "../utils/socket";
+import { useQueryClient } from "@tanstack/react-query";
 
 function MyClass() {
   const { data: user, isPending } = useUser();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    socket.on("class_joined", () => {
+      queryClient.invalidateQueries(["user"]);
+    });
+  }, [queryClient]);
 
   if (isPending) return <Spinner />;
   if (!user.class)

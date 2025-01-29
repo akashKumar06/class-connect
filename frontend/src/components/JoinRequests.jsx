@@ -1,11 +1,23 @@
+import { useEffect } from "react";
 import { useHandleClassRequests } from "../hooks/class/useHandleClassRequests";
 import { useClassRequests } from "../hooks/useClassRequests";
 import Spinner from "./Spinner";
+import socket from "../utils/socket";
+import { useQueryClient } from "@tanstack/react-query";
 
 function JoinRequests({ classId }) {
   const { classInfo, isPending: isFetchingRequests } =
     useClassRequests(classId);
   const { mutate: handleClassRequest, isPending } = useHandleClassRequests();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    socket.on("class_join", (data) => {
+      console.log(data);
+      queryClient.invalidateQueries({ queryKey: ["classRequests"] });
+    });
+  }, [queryClient]);
+
   if (isFetchingRequests) return <Spinner />;
   return (
     <div className="bg-white w-1/2 h-full rounded-lg p-4 overflow-y-auto overflow-x-hidden no-scrollbar">
@@ -18,11 +30,15 @@ function JoinRequests({ classId }) {
           classInfo.requests.map((user) => (
             <li
               key={user._id}
-              className="py-4 flex justify-between items-center bg-gray-100 p-4 rounded-lg"
+              className={`${
+                isPending ? "backdrop-blur-1" : " "
+              } py-4 flex justify-between items-center bg-gray-100 p-4 rounded-lg`}
             >
               <div>
-                <p className="text-lg font-medium">Akash Kumar</p>
-                <p className="text-gray-500">akash@gmail.com</p>
+                <p className="text-lg font-medium">
+                  {user.fullname.firstname} {user.fullname.lastname}
+                </p>
+                <p className="text-gray-500">{user.email}</p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -35,7 +51,7 @@ function JoinRequests({ classId }) {
                   }
                   className=" text-white px-4 py-1 rounded-lg bg-green-500 hover:bg-green-600 transition"
                 >
-                  {isPending ? <Spinner /> : "Accept"}
+                  Accept
                 </button>
                 <button
                   onClick={() =>
@@ -47,7 +63,7 @@ function JoinRequests({ classId }) {
                   }
                   className="bg-red-500 text-white px-4 py-1 rounded-lg hover:bg-red-600 transition"
                 >
-                  {isPending ? <Spinner /> : "Reject"}
+                  Reject
                 </button>
               </div>
             </li>
